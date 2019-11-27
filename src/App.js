@@ -1,29 +1,32 @@
 import React from 'react';
 import './App.css';
 import { gql } from 'apollo-boost'
-import { useQuery } from 'react-apollo'
+import { Query } from 'react-apollo'
 
-const query = gql`
+const ALL_PERSONS = gql`
 {
   allPersons {
     name,
     phone,
-    address {
-      street,
-      city
-    }
     id
   }
 }
 `
 
-const App = (props) => {
-  const results = useQuery(query)
-  console.log(results)
+const App = () => {
   return (
-    <div>
-      test
-    </div>
+    <Query query={ALL_PERSONS}>
+      {(result) => {
+        if (result.loading) {
+          return <div>Loading</div>
+        }
+        return (
+          <div>
+            {result.data.allPersons.map(p => p.name).join(', ')}
+          </div>
+        )
+      }}
+    </Query>
   )
 }
 
